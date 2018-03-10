@@ -1,15 +1,17 @@
 <?php
 include "funciones.php";
+
 session_start();
 echo "Hola ".$_SESSION['nombre']." ".$_SESSION['apell']."<br>";
-$conex=conectar();
-$consulta=mysqli_query($conex,"SELECT Codigo,Descripcion from asignatura a,profesor p where a.Dni_prof=p.DNI and p.DNI=$_SESSION[dni]");
+$conex = conectar();
+$consulta = mysqli_query($conex,"SELECT Codigo,Descripcion from asignatura a,profesor p where a.Dni_prof=p.DNI and p.DNI=$_SESSION[dni]");
 mysqli_close($conex);
+
 if(isset($_REQUEST['buscar']))
 {
     $_SESSION['asig_prof']=$_REQUEST['asig'];
-    $conex=conectar();
-    $consulta2=mysqli_query($conex,"SELECT distinct DNI,Nombre,Apellidos from alumnos a,calificacion c where a.DNI=c.Dni_alumno and Cod_asig=$_REQUEST[asig]");
+    $conex = conectar();
+    $consulta2 = mysqli_query($conex,"SELECT distinct DNI,Nombre,Apellidos from alumnos a,calificacion c where a.DNI=c.Dni_alumno and Cod_asig=$_REQUEST[asig]");
     echo mysqli_error($conex);
     ?>
     <form action="" method="POST">
@@ -25,14 +27,14 @@ if(isset($_REQUEST['buscar']))
             <option value="3EVAL">3 EVAL</option>
             </select><br />
         NOTA: <input type="text" name="not" /><br />
-        Comentarios: <input type="text" name="com"/><br />        
+        Comentarios: <input type="text" name="com"/><br />
     <input type="submit" name="guardar" value="Guardar"/>
     </form>
 <?php
 }
 if(isset($_REQUEST['guardar']))
 {
-    if(!preg_match('/\d/',$_REQUEST['not']) || ($_REQUEST['not']<0 || $_REQUEST['not']>10)) 
+    if(!preg_match('/\d/',$_REQUEST['not']) || ($_REQUEST['not']<0 || $_REQUEST['not']>10))
         echo "<br>Nota incorrecta<br>";
     if(!strlen($_REQUEST['com'])>0)
         echo "<br>El nombre no puede estar vacio<br>";
@@ -41,7 +43,7 @@ if(isset($_REQUEST['guardar']))
         $conex=conectar();
         $inser=mysqli_query($conex,"UPDATE calificacion SET Nota=$_REQUEST[not],Comentarios='$_REQUEST[com]' where Dni_alumno=$_REQUEST[alum] and Evaluacion='$_REQUEST[evaluacion]' and Cod_asig=$_SESSION[asig_prof]");
         echo "Registro guardado correctamente";
-    }        
+    }
 }
 
 ?>
